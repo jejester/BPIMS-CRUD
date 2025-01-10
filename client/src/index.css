@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: DM-Serif;
+    src: url('/fonts/DM_Serif_Text/DMSerifText-Regular.ttf');
+}
+
+@font-face {
+    font-family: Work-Sans;
+    src: url('/fonts/Work_Sans/WorkSans-VariableFont_wght.ttf');
+}
+

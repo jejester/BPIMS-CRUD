@@ -21,9 +21,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        photo: {
+        accountType: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        imagePath: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         country: {
             type: DataTypes.STRING,

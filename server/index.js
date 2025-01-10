@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const db = require('./models');
+const path = require('path');
 const cors = require('cors');
 
 // allows to receive json data
@@ -10,14 +11,19 @@ app.use(express.json());
 app.use(cors());
 
 // routes 
+app.get('/api', (req, res) => {
+    res.send('Welcome to the Employee API');
+});
 const employeesRouter = require('./routes/Employees');
-app.use('/employees', employeesRouter);
+app.use('/api/employees', employeesRouter);
 
+// serve static files
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // sync the database and start the server
 db.sequelize.sync().then(() => {
-    app.listen(3000, () => {
-        console.log('Server is running on port 3000');
+    app.listen(5000, () => {
+        console.log('Server is running on port 5000');
     });
 }).catch((err) => {
     console.error('Error starting server: ', err);
