@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const db = require('./models');
 const cors = require('cors');
 
 // allows to receive json data
@@ -9,10 +10,15 @@ app.use(express.json());
 app.use(cors());
 
 // routes 
-app.use('/test', (req, res) => {
-    res.send('Hello World');
-});
+const employeesRouter = require('./routes/Employees');
+app.use('/employees', employeesRouter);
 
-app.listen(3001, () => {
-    console.log('Server is running on port 3001');
+
+// sync the database and start the server
+db.sequelize.sync().then(() => {
+    app.listen(3000, () => {
+        console.log('Server is running on port 3000');
+    });
+}).catch((err) => {
+    console.error('Error starting server: ', err);
 });
