@@ -30,7 +30,7 @@ function Navbar() {
                     <div className="flex items-center justify-between h-16">
                         {/*logo */}
                         <div className="flex-shrink-0">
-                            <h1 className="font-dmSerif text-slate-900 text-2xl md:text-3xl lg:text-5xl font-bold drop-shadow-md text-transparent dark:text-white">
+                            <h1 className="font-dmSerif text-gray-900 text-2xl md:text-3xl lg:text-5xl font-bold drop-shadow-md dark:text-white">
                                 Tablea
                             </h1>
                         </div>

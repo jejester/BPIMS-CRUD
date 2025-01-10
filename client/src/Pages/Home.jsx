@@ -13,6 +13,10 @@ function Home() {
     const [itemsPerPage, setItemsPerPage]  = useState(5); // Number of items per page
 
     useEffect(() => {
+        fetchEmployees();
+    }, []);
+
+    const fetchEmployees = () => {
         axiosClient.get('/employees').then((response) => {
             if (response.status === 200) {
                 setEmployees(response.data);
@@ -22,7 +26,7 @@ function Home() {
         }).catch((err) => {
             console.error('Error getting employees:', err);
         });
-    }, []);
+    };
 
     // Filter employees by search term
     const filteredEmployees = employees.filter((employee) => {
@@ -31,6 +35,10 @@ function Home() {
             employee.email.toLowerCase().includes(search.toLowerCase()) ||
             employee.contactNumber.toLowerCase().includes(search.toLowerCase());
     });
+
+    const handleEmployeeAdded = (newEmployee) => {
+        setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
+    };
 
     // Pagination Logic
     const indexOfLastEmployee = currentPage * itemsPerPage;
@@ -56,7 +64,7 @@ function Home() {
 
             {/*add employee button */}              
             <div className="flex items-center justify-end mb-5">
-                <AddEmployeeDialog/>
+                <AddEmployeeDialog onEmployeeAdded={handleEmployeeAdded}/>
             </div>
 
             {/*search and select how pagination number*/}

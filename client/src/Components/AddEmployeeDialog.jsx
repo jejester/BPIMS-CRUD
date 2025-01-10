@@ -11,7 +11,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axiosClient from '../AxiosClient';
 
-export default function AddEmployeeDialog() {
+export default function AddEmployeeDialog({ onEmployeeAdded }) {
     const [open, setOpen] = useState(false);
     const [preview, setPreview] = useState(null);
 
@@ -54,7 +54,7 @@ export default function AddEmployeeDialog() {
             image: Yup.mixed().nullable(),
         }),
         //submit form data
-        onSubmit: (values) => {
+        onSubmit: (values, { resetForm }) => {
             const formData = new FormData();
             // Append form values to FormData
             Object.keys(values).forEach((key) => {
@@ -64,11 +64,18 @@ export default function AddEmployeeDialog() {
             console.log('Form data:', formData);
             
             
-
             // Send the form data, including the image
             axiosClient.post('employees/create', formData)
                 .then((response) => {
                     console.log('Employee added successfully:', response.data);
+
+                    // Reset the form fields
+                    resetForm();
+                    
+                    // Call the callback function to notify the parent component
+                    if (onEmployeeAdded) {
+                        onEmployeeAdded(response.data); // Pass the newly added employee
+                    }
                 })
                 .catch((err) => {
                     console.error('Error adding employee:', err.message);
