@@ -4,13 +4,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteDialog from '../Components/DeleteDialog';
 import SearchIcon from '@mui/icons-material/Search';
 import AddEmployeeDialog from '../Components/AddEmployeeDialog';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import EditEmployeeDialog from '../Components/EditEmployeeDialog';
 
 function Home() {
     const [employees, setEmployees] = useState([]);
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage]  = useState(5); // Number of items per page
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
     useEffect(() => {
         fetchEmployees();
@@ -39,6 +41,16 @@ function Home() {
     const handleEmployeeAdded = (newEmployee) => {
         setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
     };
+
+       // Add this new function to handle employee updates
+       const handleEmployeeUpdated = (updatedEmployee) => {
+        setEmployees((prevEmployees) =>
+            prevEmployees.map((emp) =>
+                emp.id === updatedEmployee.id ? updatedEmployee : emp
+            )
+        );
+    };
+
 
     // Pagination Logic
     const indexOfLastEmployee = currentPage * itemsPerPage;
@@ -123,12 +135,17 @@ function Home() {
                                     <td className="py-3 px-4 lg:space-x-3">
                                         {/*update and delete Buttons */}
                                         <EditIcon
-                                            className="text-blue-600 dark:text-blue-400 hover:underline hover:text-blue-500 cursor-pointer hover:drop-shadow-md" 
-                                            onClick={() => console.log('Update', employee.id)}/>
+                                            className="text-blue-600 dark:text-blue-400 hover:underline hover:text-blue-500 cursor-pointer hover:drop-shadow-md"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent event bubbling
+                                                setSelectedEmployee(employee);
+                                                setIsViewDialogOpen(true);
+                                            }}
+                                        />
                                         <DeleteDialog 
                                             id={employee.id} 
+                                            onClick={(e) => e.stopPropagation()} 
                                             onDeleteSuccess={(deletedId) => {
-                                                {/*removes the deleted employee from the state*/}
                                                 setEmployees((prevEmployees) => 
                                                     prevEmployees.filter((emp) => emp.id !== deletedId)
                                                 );
@@ -168,6 +185,17 @@ function Home() {
                         </tr>
                     </tfoot>
                 </table>
+                {selectedEmployee && (
+                    <EditEmployeeDialog
+                        open={isViewDialogOpen}
+                        employee={selectedEmployee}
+                        onClose={() => {
+                            setIsViewDialogOpen(false);
+                            setSelectedEmployee(null);
+                        }}
+                        onEmployeeUpdated={handleEmployeeUpdated}
+                    />
+                )}
             </div>
 
         </div>

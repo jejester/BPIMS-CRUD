@@ -56,7 +56,7 @@ export default function AddEmployeeDialog({ onEmployeeAdded }) {
         //submit form data
         onSubmit: (values, { resetForm }) => {
             const formData = new FormData();
-            // Append form values to FormData
+            //apend form values to Form Data
             Object.keys(values).forEach((key) => {
                 formData.append(key, values[key]);
             });
@@ -64,12 +64,12 @@ export default function AddEmployeeDialog({ onEmployeeAdded }) {
             console.log('Form data:', formData);
             
             
-            // Send the form data, including the image
+            //send the form data, including the image
             axiosClient.post('employees/create', formData)
                 .then((response) => {
                     console.log('Employee added successfully:', response.data);
 
-                    // Reset the form fields
+                    //reset the form fields
                     resetForm();
                     
                     // Call the callback function to notify the parent component

@@ -65,17 +65,64 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// update employee by id
-router.put('/:id', async (req, res) => {
+router.put('/update/:id', upload.single('image'), async (req, res) => {
     try {
         const employee = await Employees.findByPk(req.params.id);
-        await employee.update(req.body);
-        res.json(employee);
+        
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        // Prepare update data
+        const updateData = {
+            username: req.body.username,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            contactNumber: req.body.contactNumber,
+            country: req.body.country,
+            accountType: req.body.accountType
+        };
+
+        // Handle image update
+        if (req.file) {
+            // Delete old image if it exists
+            if (employee.imagePath) {
+                try {
+                    const oldImagePath = path.join(__dirname, '../public', employee.imagePath);
+                    if (fs.existsSync(oldImagePath)) {
+                        fs.unlinkSync(oldImagePath);
+                    }
+                } catch (fileError) {
+                    console.error('Error deleting old image:', fileError);
+                    // Continue with update even if old file deletion fails
+                }
+            }
+            
+            // Add new image path to update data
+            updateData.imagePath = `/uploads/${req.file.filename}`;
+        }
+
+        // Update employee
+        const updatedEmployee = await employee.update(updateData);
+
+        // Send success response
+        res.json(updatedEmployee);
+
     } catch (err) {
-        res.status(400).json(err);
+        console.error('Update error:', {
+            message: err.message,
+            stack: err.stack
+        });
+        
+        res.status(400).json({
+            error: {
+                message: err.message,
+                details: err.errors ? err.errors.map(e => e.message) : undefined
+            }
+        });
     }
 });
-
 
 // delete employee by id
 router.delete('/:id', async (req, res) => {
