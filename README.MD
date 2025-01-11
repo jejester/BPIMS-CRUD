@@ -64,7 +64,7 @@ c. Run the Frontend
 Once the dependencies are installed, you can start the React development server:
 
 ```
-npm start
+npm run dev
 ```
 
 The frontend should now be running on http://localhost:3000.
