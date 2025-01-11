@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const router = express.Router();
+const fs = require('fs');
 const { Employees } = require('../models');
 
 // get all employeess
@@ -14,11 +15,11 @@ router.get('/', async (req, res) => {
     }
 });
 
-
-// Set up multer storage engine to specify the destination and file name
+//set up multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/uploads'); // Directory to store the uploaded file
+        //path to store the uploaded file
+        cb(null, 'public/uploads'); 
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -26,13 +27,13 @@ const storage = multer.diskStorage({
     }
 });
 
-// Create an upload instance (single file with the fieldname 'image')
+//upload instance
 const upload = multer({ storage });
 
-// Create a new employee and handle the image upload
+//add a new employee and handle the image upload
 router.post('/create', upload.single('image'), async (req, res) => {
     try {
-        // Prepare the data to create a new employee
+        //prepare data to create a new employee
         const employeeData = {
             username: req.body.username,
             firstName: req.body.firstName,
@@ -41,16 +42,15 @@ router.post('/create', upload.single('image'), async (req, res) => {
             contactNumber: req.body.contactNumber,
             country: req.body.country,
             accountType: req.body.accountType,
-            imagePath: req.file ? `/uploads/${req.file.filename}` : null, // If there's an image, save the image path, otherwise null
+            // if there's an image, save the image path, otherwise null
+            imagePath: req.file ? `/uploads/${req.file.filename}` : null, 
         };
 
-        // Create the employee in the database
+        //create the employee in the database
         const employee = await Employees.create(employeeData);
         
-        // Send the employee object as a response
         res.json(employee);
     } catch (err) {
-        // Send error response if something goes wrong
         res.status(400).json(err);
     }
 });
@@ -73,7 +73,7 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
             return res.status(404).json({ message: 'Employee not found' });
         }
 
-        // Prepare update data
+        //prepare update data
         const updateData = {
             username: req.body.username,
             firstName: req.body.firstName,
@@ -84,9 +84,9 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
             accountType: req.body.accountType
         };
 
-        // Handle image update
+        //handles image update
         if (req.file) {
-            // Delete old image if it exists
+            //delete old image if it exists
             if (employee.imagePath) {
                 try {
                     const oldImagePath = path.join(__dirname, '../public', employee.imagePath);
@@ -95,18 +95,17 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
                     }
                 } catch (fileError) {
                     console.error('Error deleting old image:', fileError);
-                    // Continue with update even if old file deletion fails
                 }
             }
             
-            // Add new image path to update data
+            //add new image path to update data
             updateData.imagePath = `/uploads/${req.file.filename}`;
         }
 
-        // Update employee
+        //updates employee
         const updatedEmployee = await employee.update(updateData);
 
-        // Send success response
+        // success response
         res.json(updatedEmployee);
 
     } catch (err) {
@@ -128,12 +127,33 @@ router.put('/update/:id', upload.single('image'), async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const employee = await Employees.findByPk(req.params.id);
+
+        if (!employee) {
+            return res.status(404).json({ message: "Employee not found" });
+        }
+
+        //checks if the employee has an image
+        if (employee.image) {
+            
+            const imagePath = path.join(__dirname, '/public/uploads/', employee.image); 
+            
+            //deletes the image if it exists
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error("Error deleting image:", err);
+                    //still delete the data even there;s image error
+                    return res.status(500).json({ message: "Error deleting image, but employee deleted" });
+                }
+                console.log("Image deleted successfully");
+            });
+        }
+
+        //delete the employee record
         await employee.destroy();
-        res.json(employee);
+        res.json({ message: "Employee deleted successfully" });
     } catch (err) {
         res.status(400).json(err);
     }
 });
-
 
 module.exports = router;

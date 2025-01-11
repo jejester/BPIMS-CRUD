@@ -10,10 +10,14 @@ function Home() {
     const [employees, setEmployees] = useState([]);
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage]  = useState(5); // Number of items per page
+    //num of items per page
+    const [itemsPerPage, setItemsPerPage]  = useState(5); 
+    //selected employee
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    //view dialog
     const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
 
+    //fetch employees
     useEffect(() => {
         fetchEmployees();
     }, []);
@@ -30,7 +34,7 @@ function Home() {
         });
     };
 
-    // Filter employees by search term
+    //fuilter employees by search term
     const filteredEmployees = employees.filter((employee) => {
         return employee.firstName.toLowerCase().includes(search.toLowerCase()) ||
             employee.lastName.toLowerCase().includes(search.toLowerCase()) ||
@@ -38,12 +42,13 @@ function Home() {
             employee.contactNumber.toLowerCase().includes(search.toLowerCase());
     });
 
+    //add employee
     const handleEmployeeAdded = (newEmployee) => {
         setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
     };
 
-       // Add this new function to handle employee updates
-       const handleEmployeeUpdated = (updatedEmployee) => {
+    //update employee
+    const handleEmployeeUpdated = (updatedEmployee) => {
         setEmployees((prevEmployees) =>
             prevEmployees.map((emp) =>
                 emp.id === updatedEmployee.id ? updatedEmployee : emp
@@ -52,18 +57,19 @@ function Home() {
     };
 
 
-    // Pagination Logic
+    //pagination
     const indexOfLastEmployee = currentPage * itemsPerPage;
     const indexOfFirstEmployee = indexOfLastEmployee - itemsPerPage;
     const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
 
     const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
 
-    // Handle page change
+    //change page
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
 
+    //change items per page
     const handlePaginationNumber = (e) => {
         const selectedValue = parseInt(e.target.value, 10); // Convert value to a number
         setItemsPerPage(selectedValue);
@@ -185,6 +191,7 @@ function Home() {
                         </tr>
                     </tfoot>
                 </table>
+                {/*edit employee dialog */}
                 {selectedEmployee && (
                     <EditEmployeeDialog
                         open={isViewDialogOpen}

@@ -11,9 +11,11 @@ import * as Yup from 'yup';
 import axiosClient from '../AxiosClient';
 
 export default function EditEmployeeDialog({ open, employee, onClose, onEmployeeUpdated }) {
+    //state variables
     const [isEditing, setIsEditing] = useState(false);
     const [preview, setPreview] = useState(employee?.imagePath ? `http://localhost:5000${employee.imagePath}` : null);
 
+    //formik form handling
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -43,9 +45,9 @@ export default function EditEmployeeDialog({ open, employee, onClose, onEmployee
         onSubmit: (values) => {
             const formData = new FormData();
     
-            // Append all form fields
+            //append all values to form data
             Object.keys(values).forEach((key) => {
-                // Only append image if it exists and is new
+                // append image file only if it's a file
                 if (key === 'image') {
                     if (values[key] instanceof File) {
                         formData.append(key, values[key]);
@@ -55,39 +57,42 @@ export default function EditEmployeeDialog({ open, employee, onClose, onEmployee
                 }
             });
         
-            // Make the API call
+            //send update request
             axiosClient.put(`employees/update/${employee.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             })
             .then((response) => {
+                // notify parent component
                 if (onEmployeeUpdated) {
                     onEmployeeUpdated(response.data);
                 }
+                // close dialo
                 setIsEditing(false);
                 onClose();
             })
             .catch((err) => {
                 console.error('Error updating employee:', err.response?.data || err.message);
-                // Optionally show error to user
-                alert('Error updating employee. Please try again.');
             });
         },
     });
 
+    //handle image change
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         formik.setFieldValue('image', file);
         setPreview(URL.createObjectURL(file));
     };
 
+    //close dialog
     const handleClose = () => {
         setIsEditing(false);
         formik.resetForm();
         onClose();
     };
 
+    //render dialog
     return (
         <Dialog
             open={open}

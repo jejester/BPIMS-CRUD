@@ -12,14 +12,17 @@ import axiosClient from '../AxiosClient';
 export default function DeleteDialog({ id, onDeleteSuccess }) {
     const [open, setOpen] = useState(false);
 
+    //open dialog
     const handleClickOpen = () => {
     setOpen(true);
     };
 
+    // close dialog
     const handleClose = () => {
     setOpen(false);
     };
 
+    // delete employee
     const handleDelete = () => {
         axiosClient.delete(`employees/${id}`)
             .then((response) => {
@@ -38,6 +41,7 @@ export default function DeleteDialog({ id, onDeleteSuccess }) {
             });
     };
 
+    // render dialog
     return (
     <>
         <DeleteIcon

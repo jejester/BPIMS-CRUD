@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         imagePath: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT('long'),
             allowNull: true,
         },
         country: {

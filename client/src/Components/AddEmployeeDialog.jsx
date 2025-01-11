@@ -72,9 +72,9 @@ export default function AddEmployeeDialog({ onEmployeeAdded }) {
                     //reset the form fields
                     resetForm();
                     
-                    // Call the callback function to notify the parent component
-                    if (onEmployeeAdded) {
-                        onEmployeeAdded(response.data); // Pass the newly added employee
+                    if (onEmployeeAdded) {                        
+                        //pass the added employee
+                        onEmployeeAdded(response.data); 
                     }
                 })
                 .catch((err) => {

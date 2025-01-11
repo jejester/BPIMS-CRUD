@@ -12,3 +12,6 @@
     src: url('/fonts/Work_Sans/WorkSans-VariableFont_wght.ttf');
 }
 
+h3, h2, p {
+    font-family: Work-Sans;
+}

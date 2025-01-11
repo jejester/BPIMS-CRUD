@@ -20,10 +20,12 @@ app.use('/api/employees', employeesRouter);
 // serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
+const PORT = process.env.PORT || 5000;
+
 // sync the database and start the server
 db.sequelize.sync().then(() => {
-    app.listen(5000, () => {
-        console.log('Server is running on port 5000');
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
     });
 }).catch((err) => {
     console.error('Error starting server: ', err);
