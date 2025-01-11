@@ -20,42 +20,52 @@ a. Install Dependencies
 
 In the project directory, navigate to the backend folder and install the necessary backend dependencies:
 
+```
 cd backend
 npm install
+```
 
 b. Set Up Environment Variables
 
-Ensure that your environment variables are set up for the Express server. You can create a .env file in the backend folder and add the necessary configuration. For example:
+Ensure that your environment variables are set up for the Express server. You can create a `.env` file in the backend folder and add the necessary configuration. For example:
 
+```
 PORT=5000
-MONGO_URI=<your_mongo_connection_string>
-
-Replace <your_mongo_connection_string> with your actual MongoDB connection URI.
+```
 c. Run the Backend
 
 Once the dependencies are installed, you can start the Express server:
 
+```
 npm start
+```
 
 The backend should now be running on http://localhost:5000.
+
 3. Set Up the Frontend (React)
 a. Navigate to the Frontend Directory
 
 Go back to the project root and navigate to the frontend directory:
 
+```
 cd ../frontend
+```
 
 b. Install Dependencies
 
 In the frontend folder, install the necessary dependencies:
 
+```
 npm install
+```
 
 c. Run the Frontend
 
 Once the dependencies are installed, you can start the React development server:
 
+```
 npm start
+```
 
 The frontend should now be running on http://localhost:3000.
 4. Access the Application
