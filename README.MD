@@ -21,7 +21,7 @@ a. Install Dependencies
 In the project directory, navigate to the backend folder and install the necessary backend dependencies:
 
 ```
-cd backend
+cd server
 npm install
 ```
 
@@ -48,7 +48,7 @@ a. Navigate to the Frontend Directory
 Go back to the project root and navigate to the frontend directory:
 
 ```
-cd ../frontend
+cd ../client
 ```
 
 b. Install Dependencies
@@ -69,6 +69,5 @@ npm run dev
 
 The frontend should now be running on http://localhost:3000.
 4. Access the Application
-
-    Open your browser and visit http://localhost:3000 to see the React application.
-    The React app will make API requests to http://localhost:5000 for backend functionality.
+Open your browser and visit http://localhost:3000 to see the React application.
+The React app will make API requests to http://localhost:5000 for backend functionality.
